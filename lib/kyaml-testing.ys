@@ -1,0 +1,41 @@
+!YS-v0
+
+ns: kyaml-testing
+
+use ys::taptest: :all
+
+defn kyaml-render(_ test):
+  resp =: sh({:in test.data} 'yaml_renderer')
+
+  # Debugging tests:
+  cond:
+    test.SHOW == 'resp':
+      WWW: resp
+    test.SHOW:
+      WWW: resp.out
+
+  if resp.exit == 0:
+    then:
+      out =: resp.out
+      when-not out == test.want:
+        tmp =: ENV.TMP
+        want =: "$tmp/want"
+        got =: "$tmp/got"
+        write want: test.want
+        write got: out
+        warn:
+          sh("diff -u $want $got").out
+      =>: out
+    else:
+      =>: resp.err
+
+defn test-kyaml(tests):
+  test:
+    mapv _ tests:
+      fn(t)::
+        name:: t.name
+        form:: kyaml-render
+        data:: t.yaml
+        want:: t.kyaml
+        :when t.SKIP:: {SKIP: true}
+        :when t.ONLY:: {ONLY: true}

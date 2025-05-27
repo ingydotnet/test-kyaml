@@ -1,0 +1,71 @@
+#!/usr/bin/env ys-0
+
+use ys::taptest: :all
+use kyaml-testing: :all
+
+test-kyaml::
+- name: Basic Mapping
+  yaml: |
+    k1: one
+    k2: 2
+    k3: true
+    k4: null
+
+  kyaml: |
+    ---
+    {
+      k1: "one",
+      k2: 2,
+      k3: true,
+      k4: null,
+    }
+
+- name: Basic Sequence
+  yaml: |
+    - one
+    - 2
+    - true
+    - null
+  kyaml: |
+    ---
+    [
+      "one",
+      2,
+      true,
+      null,
+    ]
+
+- name: Mixed Collections
+  SKIP: true
+  NOTE:
+    KYAML errors on this valid YAML
+  yaml: |
+    k1:
+    - one
+    - [2, two]
+    k2:
+      - true
+      - null
+  kyaml:
+
+- name: Unquoted Keys
+  yaml: |
+    1:
+    true:
+    false:
+    null:
+    []:
+    on:
+  kyaml: |
+    ---
+    {
+      1: ,
+      true: ,
+      false: ,
+      null: ,
+      []: ,
+      "on": ,
+    }
+
+
+done:
