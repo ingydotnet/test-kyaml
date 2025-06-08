@@ -1,0 +1,29 @@
+#!/usr/bin/env ys-0
+
+use ys::taptest: :all
+use kyaml-testing: :all
+
+test-kyaml::
+- name: Lost comments
+  yaml: |
+    # comment 1
+    k1: [ # comment 2
+    # comment 3
+      # comment 4
+    ]
+
+  kyaml: |
+    ---
+
+
+- name: Blank lines lost
+  yaml: |
+    k1: 1
+
+    k2: 2
+
+  kyaml: |
+    ---
+
+
+done:

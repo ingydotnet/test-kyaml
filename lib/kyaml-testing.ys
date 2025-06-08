@@ -16,16 +16,11 @@ defn kyaml-render(_ test):
 
   if resp.exit == 0:
     then:
-      out =: resp.out
-      when-not out == test.want:
-        tmp =: ENV.TMP
-        want =: "$tmp/want"
-        got =: "$tmp/got"
-        write want: test.want
-        write got: out
-        warn:
-          sh("diff -u $want $got").out
-      =>: out
+      want =: test.want
+      got =: resp.out
+      when-not got == want:
+        show-diff(test.want resp.out test.name)
+      =>: got
     else:
       =>: resp.err
 
@@ -39,3 +34,16 @@ defn test-kyaml(tests):
         want:: t.kyaml
         :when t.SKIP:: {SKIP: true}
         :when t.ONLY:: {ONLY: true}
+
+defn show-diff(want got name):
+  tmp =: ENV.TMP
+  want-file =: "$tmp/want"
+  got-file =: "$tmp/got"
+  write want-file: want
+  write got-file: got
+  diff =: sh("diff -u $want-file $got-file").out
+  warn: |+
+
+
+    === Diff for '$name' ===
+    $diff

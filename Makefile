@@ -1,11 +1,10 @@
-$(shell [ -d .makes ] || \
-  (git clone -q https://github.com/makeplus/makes .makes))
-include .makes/init.mk
+M := .git/.makes
+$(shell [ -d $M ] || git clone -q https://github.com/makeplus/makes $M)
+include $M/init.mk
 
 ID := kyaml-test-server
 TMP := /tmp/$(ID)
 HIST := $(TMP)/.bash_history
-ROOT := $(shell pwd -P)
 
 export YSPATH := $(ROOT)/lib
 
