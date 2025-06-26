@@ -1,6 +1,7 @@
-M := .git/.makes
+M := .cache/makes
 $(shell [ -d $M ] || git clone -q https://github.com/makeplus/makes $M)
 include $M/init.mk
+include $M/clean.mk
 
 ID := kyaml-test-server
 TMP := /tmp/$(ID)
@@ -73,7 +74,3 @@ start: build
 	  done; \
 	  echo "Docker container '$(ID)' is ready!"; \
 	)
-
-
-distclean::
-	$(RM) -r .makes
